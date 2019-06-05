@@ -32,11 +32,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socket.on('update-messages', function (data) {
         console.log("ANGULAR UPDATING MESSAGES", data);
       if(true) {
-            console.log("in update messages");
+            console.log("sdfsadfsqdfa");
         this.chats = data;
 
         console.log("\n---------------------------------------------\n"+user.nickname + " sent message: "+ this.msgData.message + " to ROOM: " + user.room +"\n---------------------------------------------\n");
-
         this.msgData = { room: user.room, nickname: user.nickname, message: '' }
         // this.getChatByRoom(user.room);
         this.scrollToBottom();
@@ -55,14 +54,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch(err) { }
   }
 
-  // getChatByRoom(room) {
-  //   this.chatService.getChatByRoom(room).then((res) => {
-  //     console.log("getChatByRoom RES:\n"+JSON.stringify(res));
-  //     this.chats = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
+//   getChatByRoom(room) {
+//     this.chatService.getChatByRoom(room).then((res) => {
+//       console.log("getChatByRoom RES:\n"+JSON.stringify(res));
+//       this.chats = res;
+//     }, (err) => {
+//       console.log(err);
+//     });
+//   }
 
   joinRoom() {
     var date = new Date();
@@ -78,14 +77,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     var user = JSON.parse(localStorage.getItem("user"));
 
-    // this.socket.on('update-messages', function (data) {
-    //   if(data.room === JSON.parse(localStorage.getItem("user")).room) {
-    //     this.chats = data;
-    //     this.msgData = { room: user.room, nickname: user.nickname, message: '' }
-    //     // this.getChatByRoom(user.room);
-    //     this.scrollToBottom();
-    //   }
-    // }.bind(this));
+    this.socket.on('update-messages', function (data) {
+      if(data.room === JSON.parse(localStorage.getItem("user")).room) {
+        this.chats = data;
+        this.msgData = { room: user.room, nickname: user.nickname, message: '' }
+        // this.getChatByRoom(user.room);
+        this.scrollToBottom();
+      }
+    }.bind(this));
   }
 
   sendMessage() {
@@ -100,21 +99,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // });
     console.log("\nattempting to send message:\n" + JSON.stringify(this.msgData));
 
-    this.chatService.sendMsg(this.msgData);
+    this.socket.emit('send-message', this.msgData);
+
     
-    // var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(localStorage.getItem("user"));
     
     
     
-<<<<<<< HEAD
-    this.socket.on('update-messages', function (data) {
-      if(data.room === JSON.parse(localStorage.getItem("user")).room) {
-        this.chats = data;
-=======
     // this.socket.on('update-messages', function (data) {
-    //   if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
+    //   if(data.room === JSON.parse(localStorage.getItem("user")).room) {
     //     this.chats = data;
->>>>>>> upstream/master
 
     //     console.log("\n---------------------------------------------\n"+user.nickname + " sent message: "+ this.msgData.message + " to ROOM: " + user.room +"\n---------------------------------------------\n");
 

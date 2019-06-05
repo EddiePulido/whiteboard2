@@ -18,8 +18,8 @@ import {
     @Input() public width = 1000;
     @Input() public height = 800;
     
-    @Input() public color = "#000";
-    @Input() public lineSize = 25;
+    @Input() markerColor: string;
+    @Input() size : number;
 
     socket = io('http://localhost:8000');
   
@@ -33,9 +33,9 @@ import {
       canvasEl.width = this.width;
       canvasEl.height = this.height;
   
-      this.cx.lineWidth = this.lineSize;
+      this.cx.lineWidth = this.size;
       this.cx.lineCap = 'round';
-      this.cx.strokeStyle = this.color;
+      this.cx.strokeStyle = "#000000";
   
       this.captureEvents(canvasEl);
 
@@ -93,6 +93,8 @@ import {
 
   
     private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
+        this.cx.strokeStyle = this.markerColor;
+        this.cx.lineWidth = this.size;
       if (!this.cx) { return; }
   
       this.cx.beginPath();
@@ -103,6 +105,11 @@ import {
         this.cx.stroke();
       }
     }
+
+    public redraw() {
+        console.log("Redrawing");
+        this.cx.clearRect(0,0, this.width, this.height);
+      }
   
   }
   

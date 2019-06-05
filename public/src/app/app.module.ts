@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { ColorPickerModule } from "ngx-color-picker";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './canvas/canvas.component';
@@ -24,7 +24,8 @@ const config: SocketIoConfig = { url: 'http://localhost:8000', options: {} };
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    ColorPickerModule
   ],
   providers: [ChatService],
   bootstrap: [AppComponent]
