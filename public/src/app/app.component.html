@@ -3,7 +3,7 @@
         <div class="container1 sm-4 med-4 lg-4 xlg-3">
             
             <div class='nav sm-4 med-4 lg-4'>
-                <input class="sm-4 med-4" type='text' (colorPickerChange)="update(color)" (colorPickerSelect)="update(color)" [cpFallbackColor]="000000" [cpOKButton]="true" [cpOKButtonClass]= "'btn btn-primary btn-xs'" [(colorPicker)]="color" [style.background]="color" value="Pick a Color" />
+                <input class="sm-4 med-4" type='text' (colorPickerChange)="update(color)" (colorPickerSelect)="update(color)" [cpFallbackColor]="000000" [cpOKButton]="true" [cpOKButtonClass]= "'btn btn-primary btn-xs'" [(colorPicker)]="color" [style.background]="color" [cpPosition]= "'bottom'" value="Pick a Color" />
                 <button (click)="microify()" class="btn btn-secondary med-1 sm-1">Tiny</button>
                 <button (click)="smallify()" class="btn btn-secondary med-1 sm-1">Small</button>
                 <button (click)="medify()" class="btn btn-secondary med-1 sm-1">Med</button>
