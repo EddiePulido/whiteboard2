@@ -1,5 +1,5 @@
 import {
-    Component, Input, ElementRef, AfterViewInit, ViewChild, OnInit
+    Component, Input, ElementRef, AfterViewInit, ViewChild, OnInit, HostListener
   } from '@angular/core';
   import { fromEvent } from 'rxjs';
   import { switchMap, takeUntil, pairwise } from 'rxjs/operators'
@@ -15,17 +15,19 @@ import {
   
     @ViewChild('canvas', {static: true}) public canvas: ElementRef;
   
-    @Input() public width = 1000;
-    @Input() public height = 800;
+    @Input() public width = window.innerWidth * .5;
+    @Input() public height = window.innerHeight * .8;
     
     @Input() markerColor: string;
     @Input() size : number;
 
     socket = io('http://localhost:8000');
   
-    private cx: CanvasRenderingContext2D;
+    public cx: CanvasRenderingContext2D;
 
-  
+
+
+
     public ngAfterViewInit() {
       const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
       this.cx = canvasEl.getContext('2d');
@@ -42,13 +44,24 @@ import {
 
     }
 
+    // @HostListener('window:resize')onResize(){
+    //     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+    //     this.cx = canvasEl.getContext('2d');
+        
+    //     canvasEl.width = window.innerWidth * .8;
+    //     canvasEl.height = window.innerHeight *.8;
+    // }
+
     ngOnInit(){
         this.socket.on("draw-this",function(data){
-            this.drawOnCanvas(data.prevPos,data.currentPos);
+            this.drawOnCanvas(data.prevPos,data.currentPos,data.color, data.size);
         }.bind(this))
+
 
         
     }
+
+
     
     private captureEvents(canvasEl: HTMLCanvasElement) {
       // this will capture all mousedown events from the canvas element
@@ -84,17 +97,17 @@ import {
           };
     
           // this method we'll implement soon to do the actual drawing
-          this.drawOnCanvas(prevPos, currentPos);
-          this.socket.emit("draw-coordinates",{prevPos: prevPos, currentPos: currentPos});
+          this.drawOnCanvas(prevPos, currentPos,this.markerColor, this.size);
+          this.socket.emit("draw-coordinates",{prevPos: prevPos, currentPos: currentPos,color: this.markerColor, size: this.size});
 
         });
     }
-
+ 
 
   
-    private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
-        this.cx.strokeStyle = this.markerColor;
-        this.cx.lineWidth = this.size;
+    private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }, color, size) {
+        this.cx.strokeStyle = color;
+        this.cx.lineWidth = size;
       if (!this.cx) { return; }
   
       this.cx.beginPath();
@@ -104,12 +117,16 @@ import {
         this.cx.lineTo(currentPos.x, currentPos.y);
         this.cx.stroke();
       }
+
+      this.cx.strokeStyle = this.markerColor;
     }
 
     public redraw() {
         console.log("Redrawing");
         this.cx.clearRect(0,0, this.width, this.height);
       }
+
+
   
   }
   

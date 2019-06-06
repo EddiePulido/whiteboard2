@@ -55,6 +55,11 @@ io.on('connection', function (socket) {
         console.log("Reached server after drawing");
         io.emit("draw-this",data);
     })
+
+    socket.on("clear",function(){
+        console.log("Clearing all boards");
+        io.emit("clear-board");
+    })
     socket.on('grab-messages',function(msg){
         Chat.find({room: msg.room}, function(err, data){
             if(err){

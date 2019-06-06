@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { CanvasComponent } from './canvas/canvas.component';
-
+import * as io from "socket.io-client";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,9 +16,18 @@ export class AppComponent implements AfterViewInit{
     bomb : any;
     title = 'public';
     constructor() {};
+
+    socket = io('http:localhost:8000');
     
     ngAfterViewInit() {
       console.log(this.selectedColor);
+    }
+
+    ngOnInit(){
+        this.socket.on("clear-board",function(){
+            console.log("CLEARING ALL BOARDS")
+            this.clear();
+        }.bind(this))
     }
   
     update(jscolor) {
@@ -53,7 +62,9 @@ export class AppComponent implements AfterViewInit{
     
   
     clear() {
-      this.canvasComponent.redraw();
+        this.canvasComponent.redraw();
+        this.socket.emit("clear");
+        console.log("clear function called");
     }
   }
   
