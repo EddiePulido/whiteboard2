@@ -57,6 +57,9 @@ export class AppComponent implements AfterViewInit{
   
     draw(jscolor){
       this.selectedColor = jscolor;
+      if(this.selectedColor == undefined) {
+        this.selectedColor = "#000000"
+      }
     }
   
     
