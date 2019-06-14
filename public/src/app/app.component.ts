@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { CanvasComponent } from './canvas/canvas.component';
 import * as io from "socket.io-client";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -26,7 +27,7 @@ export class AppComponent implements AfterViewInit{
     ngOnInit(){
         this.socket.on("clear-board",function(){
             console.log("CLEARING ALL BOARDS")
-            this.clear();
+            this.canvasComponent.redraw();
         }.bind(this))
     }
   
@@ -66,6 +67,7 @@ export class AppComponent implements AfterViewInit{
   
     clear() {
         this.canvasComponent.redraw();
+        console.log("After the redraw");
         this.socket.emit("clear");
         console.log("clear function called");
     }

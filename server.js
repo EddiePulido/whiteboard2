@@ -11,6 +11,12 @@ const Chat = require('./server/models/Chat.js')
 var isDone = false;
 
 // socket io
+
+io.on("clear",function(socket){
+    console.log("Clearing all boards");
+    io.emit("clear-board");
+})
+
 io.on('connection', function (socket) {
     console.log('User connected');
     socket.on('disconnect', function() {
@@ -24,6 +30,7 @@ io.on('connection', function (socket) {
         console.log("Connected");
         console.log("SENT MESSAGE:\n"+JSON.stringify(msg));
         Chat.create(msg, function(err, data){
+            console.log("Got to Chat.create in server.js");
             console.log(data);
             if(err){
                 console.log("err creating message:\n"+err);
@@ -56,10 +63,7 @@ io.on('connection', function (socket) {
         io.emit("draw-this",data);
     })
 
-    socket.on("clear",function(){
-        console.log("Clearing all boards");
-        io.emit("clear-board");
-    })
+
     socket.on('grab-messages',function(msg){
         Chat.find({room: msg.room}, function(err, data){
             if(err){

@@ -15,8 +15,8 @@ import {
   
     @ViewChild('canvas', {static: true}) public canvas: ElementRef;
   
-    @Input() public width = window.innerWidth * .5;
-    @Input() public height = window.innerHeight * .8;
+    @Input() public width = window.innerWidth * .85;
+    @Input() public height = window.innerHeight * .6;
     
     @Input() markerColor: string;
     @Input() size : number;
@@ -34,6 +34,9 @@ import {
   
       canvasEl.width = this.width;
       canvasEl.height = this.height;
+      canvasEl.style.margin = "50px";
+      canvasEl.style.background = "white";
+
   
       this.cx.lineWidth = this.size;
       this.cx.lineCap = 'round';
@@ -65,6 +68,37 @@ import {
     
     private captureEvents(canvasEl: HTMLCanvasElement) {
       // this will capture all mousedown events from the canvas element
+      fromEvent(canvasEl, 'touchstart')
+        .pipe(
+            switchMap((e) => {
+                return fromEvent(canvasEl, 'touchmove')
+                    .pipe(
+                        takeUntil(fromEvent(canvasEl, 'touchend')),
+                        pairwise()
+                    )
+            })
+        )
+        .subscribe((res: [TouchEvent, TouchEvent]) => {
+            const rect = canvasEl.getBoundingClientRect();
+    
+            // previous and current position with the offset
+            const prevPos = {
+              x: res[0].touches[0].clientX - rect.left,
+              y: res[0].touches[0].clientY - rect.top
+            };
+      
+            const currentPos = {
+              x: res[1].touches[0].clientX - rect.left,
+              y: res[1].touches[0].clientY - rect.top
+            };
+      
+            // this method we'll implement soon to do the actual drawing
+            this.drawOnCanvas(prevPos, currentPos,this.markerColor, this.size);
+            this.socket.emit("draw-coordinates",{prevPos: prevPos, currentPos: currentPos,color: this.markerColor, size: this.size});
+  
+
+        })
+
       fromEvent(canvasEl, 'mousedown')
         .pipe(
           switchMap((e) => {
